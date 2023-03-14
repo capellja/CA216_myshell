@@ -40,11 +40,17 @@ int main (int argc, char ** argv)
     char * args[MAX_ARGS];                     // pointers to arg strings
     char ** arg;    
     
-    char *prompt = NULL;                   // shell prompt
-    size_t size = 0;
-    // prompt = ("%s", getcwd(prompt, size));  //
-    prompt = "---> : ";
-    
+    char *prompt = ": ";                   // shell prompt
+
+    char cwd[MAX_BUFFER];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) { // show current working directory in prompt
+            strcat(cwd, prompt);
+            prompt = (cwd);
+        } else {
+            perror("getcwd() error");
+            return 1;
+     }
+ 
     /* keep reading input until "quit" command or eof of redirected input */
 
     while (!feof(stdin)) { 
@@ -64,6 +70,15 @@ int main (int argc, char ** argv)
 
                 if (!strcmp(args[0],"cd")) {  // "cd" command
                     cd(args);
+
+                    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                                strcat(cwd, ": ");
+                                prompt = (cwd);
+                            } else {
+                                perror("getcwd() error");
+                                return 1;
+                            }
+
                     continue;
                 }
 
@@ -91,7 +106,7 @@ int main (int argc, char ** argv)
                 }
 
                 if (!strcmp(args[0],"pause")) {  // "pause" command
-                     pause();
+                     pausecommand();
                      continue;
                 }
 
@@ -99,13 +114,9 @@ int main (int argc, char ** argv)
                      continue;
                 }
 
-                if (!strcmp(args[0],"pwd")) {  // "pwd" command
-                    pwd();
-                     continue;
-                }
-
                 else {
-                    fprintf(stdout,"command not found \n");
+                    fk(args);
+                   // fprintf(stdout,"command not found \n"); //
                     continue;
 
                 }

@@ -11,9 +11,10 @@ void clr();
 void echo(char *args[]);
 void env();
 void dir(char *args[]);
-void pwd();
 void cd(char *args[]);
-int pause();
+void pausecommand(); // in-built 'pause' command exists -> rename to pausecommand to avoid conflict //
+void fk(char *args[]);
+
 
 
 #endif

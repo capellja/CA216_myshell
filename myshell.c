@@ -35,11 +35,15 @@ explicit or implicit, is provided.
 
 
 int main (int argc, char ** argv)
-{
+{   
     char buf[MAX_BUFFER];                      // line buffer
     char * args[MAX_ARGS];                     // pointers to arg strings
     char ** arg;    
     
+    if(argv[1] != NULL) {                   // batchfile 
+        freopen(argv[1], "r", stdin);        
+    }
+
     char *prompt = ": ";                   // shell prompt
 
     char cwd[MAX_BUFFER];

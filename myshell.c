@@ -41,7 +41,12 @@ int main (int argc, char ** argv)
     char ** arg;    
     
     if(argv[1] != NULL) {                   // batchfile 
-        freopen(argv[1], "r", stdin);        
+        FILE * commands = freopen(argv[1], "r", stdin);
+        if(commands == NULL) {
+            perror("Failed to open file");
+            return 1;
+        } 
+
     }
 
     char *prompt = ": ";                   // shell prompt

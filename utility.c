@@ -91,7 +91,7 @@ void IOredirect(char *args[]) {
                 break;
             }
         }
-        
+
         else if (strcmp(args[i], ">") == 0) {
 
             if (freopen(args[i+1], "w", stdout) == NULL) {

@@ -47,39 +47,30 @@ int main (int argc, char ** argv)
     char * args[MAX_ARGS];                     // pointers to arg strings
     char ** arg;    
     char * input;
-    char cwd[MAX_BUFFER];
-    char *prompt = "";       
+
+    char *shellvar = strdup(getenv("PWD"));
+    strcat(shellvar, "/bin/myshell");
+    setenv("SHELL", shellvar, 1);
+
+    char *prompt = strdup(getenv("PWD"));
+    strcat(prompt, ": ");  
+    
     parent_pid = getpid();
     int flag =  0;          // shell prompt
 
+    if (argc == 2) {
 
-    
-    if(argv[1] != NULL) {                   // batchfile 
-        if (freopen(argv[1], "r", stdin) == NULL) {
-            perror("Failed to open file");
-            return 1;
+        if(argv[1] != NULL) {                   // batchfile 
+            if (freopen(argv[1], "r", stdin) == NULL) {
+                perror("Failed to open file");
+                return 1;
+             }
+            else {
+                flag = 1;
+            }
         }
-        else {
-            flag = 1;
-        }
-
     }
 
-    if (getcwd(cwd, sizeof(cwd)) != NULL) { // show current working directory in prompt
-        prompt = getenv("SHELL");
-        strcat(cwd, "/myshell");
-        setenv("SHELL", cwd, 1);
-        strcat(prompt, ": ");
-        } else {
-            perror("getcwd() error");
-            return 1;
-        }
-     
-
-    prompt = getenv("PWD");
-    strcat(prompt, ": ");
-
- 
     /* keep reading input until "quit" command or eof of redirected input */
 
     while (!feof(stdin)) { 
@@ -109,7 +100,7 @@ int main (int argc, char ** argv)
                 if (!strcmp(input,"cd")) {  // "cd" command
                     if(args[1] != NULL) {
                         cd(args);
-                        prompt = strcat(getenv("PWD"), ": ");
+                        prompt = strcat(strdup(getenv("PWD")), ": ");
                     }
                     else {
                         printf("Directory : %s\n", getenv("PWD"));   // error checking
@@ -168,7 +159,7 @@ int main (int argc, char ** argv)
                         }
 
                         if(flag == 1) {
-                            wait(NULL);
+                            waitpid(pid, NULL, 0);  // wait for the child process to finish 
                             printf("Running command '%s' in background\n", args[0]);
                             break;
                         }

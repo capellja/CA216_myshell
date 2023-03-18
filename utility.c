@@ -12,21 +12,21 @@
 
 extern char **environ;
 
-void cd(char *args[]) {     /* ideas to do 'cd..' */
-    if(args[1] == NULL) {
-        system("pwd");
-    }
-    else if(strcmp(args[1], "..") == 1) {
-        system("cd ..");
-    }
-    else if (chdir(args[1]) != 0) {
+void cd(char *args[]) {     
+    char cwd[MAX_BUFFER];
+    
+    if (chdir(args[1]) != 0) {
         perror("chdir() error");
+    }
+    else {
+        getcwd(cwd, sizeof(cwd));
+        setenv("PWD", cwd, 1);
     }
 
 }
 
 void clr() {
-    system("clear");
+    printf("\033[2J\033[H"); // ANSI escape codes to clear screen
 }
 
 void echo(char *args[]) {
@@ -43,19 +43,23 @@ void echo(char *args[]) {
 
 void dir(char *args[]) {
 
-    char directory[MAX_BUFFER];
+    char *argv[MAX_ARGS];  // create new array to hold new order of arguments
+    argv[0] = "ls";
+    argv[1] = "-al";
+    int i;
 
-    if(args[1] == NULL) {       // list in current directory if no argument provided
-        system("ls -al");
+    for ( i = 1; argv[i] != NULL; i++) {    // increment through args and add values into new argv +1 in position to accomodate "-al"
+        argv[i + 1] = args[i];
     }
-    else{
-        strcpy(directory, args[1]);
-        char filler[MAX_BUFFER] = "ls -al ";
-        strcat(filler, directory);
-        system(filler);  
-    }
+    argv[i + 1] = NULL;     // last argument is NULL
 
+    if(execvp("ls", argv) == -1) {
+        perror("execvp fail");
+        exit(EXIT_FAILURE);  // error check
+    }
+    
 }
+
 
 void env() {
     for (int i = 0; environ[i] != NULL; i++) {
@@ -74,11 +78,17 @@ void pausecommand() {
 
 }
 
+void IOredirect(char *args[]) {
+    
+}
+
+/*
 void fk(char *args[]) {
     pid_t pid; 
     int status;
 
     pid = fork();  // create a new process
+
     if (pid < 0) { // error forking, unable to create child process.
         perror("command does not exist"); // come back to this, for error checking whether to use perror or not // 
 
@@ -86,6 +96,13 @@ void fk(char *args[]) {
 
     // in child process //
     else if( pid == 0) {
+        for(int i = 1; args[i] != NULL; i++) {
+            if (strcmp(args[i], "<")) {
+                ++i;
+                
+            }
+        }
+
         if(execvp(args[0], args) == -1) {  // execute command using child process 
             fprintf(stdout,"Command %s does not exist.\n", args[0]);
         }
@@ -99,3 +116,5 @@ void fk(char *args[]) {
     }
 
 }
+*/ 
+

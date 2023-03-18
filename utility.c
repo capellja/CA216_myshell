@@ -63,7 +63,7 @@ void dir(char *args[]) {
 
 void env() {
     for (int i = 0; environ[i] != NULL; i++) {
-        fprintf(stdout,"%s\n ", environ[i]);
+        printf("%s\n ", environ[i]);
     }
 
 }
@@ -79,8 +79,46 @@ void pausecommand() {
 }
 
 void IOredirect(char *args[]) {
-    
+
+    for(int i = 1; args[i] != NULL; i++) {
+        if(strcmp(args[i], "<") == 0) {
+            if (freopen(args[i+1], "r", stdin) == NULL) {
+                printf("Error : cannot open file %s for input\n", args[i+1]);
+            }
+            else {
+                args[i] = NULL;   // removes symbol and file name
+                args[i + 1] = NULL;
+                break;
+            }
+        }
+        
+        else if (strcmp(args[i], ">") == 0) {
+
+            if (freopen(args[i+1], "w", stdout) == NULL) {
+                printf("Error : cannot open file %s for output\n", args[i+1]);
+            }
+            else {
+                args[i] = NULL;
+                args[i + 1] = NULL;
+                break;
+            }
+        }
+
+        else if (strcmp(args[i], ">>") == 0) {
+
+            if (freopen(args[i+1], "a", stdout) == NULL) {
+                printf("Error : cannot open file %s for output\n", args[i+1]);
+            }
+            else {
+                args[i] = NULL;
+                args[i + 1] = NULL;
+                break;
+            }
+        }        
+
+    }
 }
+    
 
 /*
 void fk(char *args[]) {

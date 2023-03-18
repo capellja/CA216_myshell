@@ -35,7 +35,9 @@ explicit or implicit, is provided.
 #define MAX_ARGS 64                            // max # args
 #define SEPARATORS " \t\n"                     // token separators
 
+
 pid_t pid; 
+pid_t parent_pid;
 int status;
 
 
@@ -47,22 +49,25 @@ int main (int argc, char ** argv)
     char * input;
     char cwd[MAX_BUFFER];
     char *prompt = "";       
+    parent_pid = getpid();
     int flag =  0;          // shell prompt
 
 
     
     if(argv[1] != NULL) {                   // batchfile 
-        FILE * commands = freopen(argv[1], "r", stdin);
-        flag = 1;
-        if(commands == NULL) {
+        if (freopen(argv[1], "r", stdin) == NULL) {
             perror("Failed to open file");
             return 1;
-        } 
+        }
+        else {
+            flag = 1;
+        }
 
     }
 
     if (getcwd(cwd, sizeof(cwd)) != NULL) { // show current working directory in prompt
         prompt = getenv("SHELL");
+        strcat(cwd, "/myshell");
         setenv("SHELL", cwd, 1);
         strcat(prompt, ": ");
         } else {
@@ -72,7 +77,6 @@ int main (int argc, char ** argv)
      
 
     prompt = getenv("PWD");
-    setenv("SHELL", prompt, 1);
     strcat(prompt, ": ");
 
  
@@ -94,9 +98,13 @@ int main (int argc, char ** argv)
             while ((*arg++ = strtok(NULL,SEPARATORS))); // last entry will be NULL 
 
             input = args[0]; // command input
-            printf("%s\n", input);
             if (input) {                     // if there's anything there
                 /* check for internal/external command */
+
+                for(int i = 1; args[i] != NULL; i++) {
+                    if(strcmp(args[i], "&") == 0) {
+                    }
+                }
 
                 if (!strcmp(input,"cd")) {  // "cd" command
                     if(args[1] != NULL) {
@@ -122,25 +130,22 @@ int main (int argc, char ** argv)
                         perror("command does not exist");
                     case 0: // in child process
 
-                        // IOredirect(args);
+                        IOredirect(args);
                         
                         if (!strcmp(input,"clr")) { // "clear" command
                             clr();
-                            continue;
                         }
                
                         else if (!strcmp(input,"dir")) { // "show directory" command
                             dir(args);
-                            continue;
                         }
 
                         else if (!strcmp(input,"echo")) {  // "echo" command
                             echo(args);
-                            continue;
                         }
 
                         else if (!strcmp(input,"environ")) {     // "environ" command
-                            continue;
+                            env();
                         }
 
                         else if (!strcmp(input,"help")) {  // "help" command
@@ -148,26 +153,63 @@ int main (int argc, char ** argv)
                         }
 
                         else {     // external commands
-                            if(execvp(input, args) == -1) {  // execute command using child process 
-                                fprintf(stdout,"Command %s does not exist.\n", input);   // error checking
+                            if(execvp(input, args) == -1) {  // execute command using child process #                                    waitpid(pid, NULL, 0);
+                                fprintf(stdout,"Command %s does not exist\n", input);   // error checking
                             }
                         }
                         exit(0);
                     default: //parent process
-                        waitpid(pid, &status, 0);  // wait for the child process to finish
-                        /* for(int i = 0; args[i + 1] != NULL; i++) {
-                            waitpid(pid, &status, 0);  // wait for the child process to finish
-                            printf("test");
 
-                            if(strcmp(args[i], "&") != 0) {
-                                wait(NULL); // PICKUP FROM HERE LS NOT PRINTING BELOW LINE
+                        int flag = 0;
+                        for(int i = 1; args[i] != NULL; i++) {
+                            if(strcmp(args[i], "&") == 0) {
+                                flag = 1;
                             }
-                            else{
-                                waitpid(pid, &status, 0);  // wait for the child process to finish 
-                            }
-                        waitpid(pid, &status, 0);  // wait for the child process to finish
-
                         }
+
+                        if(flag == 1) {
+                            wait(NULL);
+                            printf("Running command '%s' in background\n", args[0]);
+                            break;
+                        }
+                        else if(flag == 0) {
+                            waitpid(pid, &status, 0);  // wait for the child process to finish 
+                            printf("this is working\n");
+                            break;
+                        }
+                        
+                     /*
+                        for(int i = 1; args[i] != NULL; i++) {
+                            if(strcmp(args[i], "&") == 0) {
+                                wait(NULL);
+                                printf("Running command '%s' in background\n", args[0]);
+
+                            } 
+                        }
+                
+                        
+                            
+
+                        
+
+                    
+                        for(int i = 1; args[i] != NULL; i++) {
+                            if(strcmp(args[i], "&") == 0) {
+                                printf("test");
+                            }
+                        
+                        waitpid(pid, &status, 0);  // wait for the child process to finish
+                        }
+                        */
+                        /*
+                            for(int i = 0; args[i + 1] != NULL; i++) {
+                                if(strcmp(args[i], "&") == 0) {
+                                    waitpid(pid, &status, 0);  // wait for the child process to finish 
+                                }
+                                else{
+                                    wait(NULL);  // wait for the child process to finish 
+                                }
+                            }
                         */
                     
                 }

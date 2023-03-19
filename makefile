@@ -1,2 +1,2 @@
-myshell: myshell.c utility.c myshell.h
-	gcc -Wall myshell.c utility.c -o myshell
+myshell: src/myshell.c src/utility.c src/myshell.h
+	gcc -Wall src/myshell.c src/utility.c -o bin/myshell

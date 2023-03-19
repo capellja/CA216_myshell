@@ -13,7 +13,6 @@
 extern char **environ;                                // extern char for environ()
 
 /*  cd   */
-// https://iq.opengenus.org/chdir-fchdir-getcwd-in-c/#:~:text=The%20chdir%20function%20is%20used,chdir(%20const%20char%20*pathname%20)%3B
 void cd(char *args[]) {     
     char cwd[MAX_BUFFER];
     
@@ -25,6 +24,7 @@ void cd(char *args[]) {
         setenv("PWD", cwd, 1);                   // update environment variable, 'PWD' to cwd
     }
 }
+// https://iq.opengenus.org/chdir-fchdir-getcwd-in-c/#:~:text=The%20chdir%20function%20is%20used,chdir(%20const%20char%20*pathname%20)%3B
 
 /*  clear   */
 void clr() {
@@ -35,52 +35,51 @@ void clr() {
 
 /*  echo    */
 void echo(char *args[]) {
-    char* echoOutput[MAX_BUFFER] ;                      // intialise output array
+    char* echoOutput[MAX_BUFFER] ;                    // intialise output array
     int i;
 
-    //  iterate through args and store them in output
-    // https://stackoverflow.com/questions/8827939/handling-arguments-array-of-execvp
-    echoOutput[0] = "echo";                                    // first element has to be echo
+    /* iterate through args and store them in output */
+    echoOutput[0] = "echo";                                 // first element has to be echo
     for (i = 1; args[i] != NULL; i++) {
         echoOutput[i] = args[i];
     }
-    echoOutput[i + 1] = NULL;                               // last element has to be NULL
+    echoOutput[i + 1] = NULL;                             // last element has to be NULL
 
-    if(execvp("echo", echoOutput) == -1) {          // call execvp(), with echo as the command and the output array
+    if(execvp("echo", echoOutput) == -1) {         // call execvp(), with echo as the command and the output array
         perror("execvp fail");
-        exit(EXIT_FAILURE);                                     // error check
+        exit(EXIT_FAILURE);                                    // error check
     }
 }
+ // https://stackoverflow.com/questions/8827939/handling-arguments-array-of-execvp
 
-/*  dir    */
+/*  dir   */
 void dir(char *args[]) {
-    char *outputdir[MAX_ARGS];                   // initialise outputdir array
-    outputdir[0] = "ls";                                   // first and second arguments must be ls, and -al in order for execvp() to run it as "ls -al"
+    char *outputdir[MAX_ARGS];                      // initialise outputdir array
+    outputdir[0] = "ls";                                     // first and second arguments must be ls, and -al in order for execvp() to run it as "ls -al"
     outputdir[1] = "-al";       
     int i;
 
-    // increment through args and insert them into outputdir, but one position forward in index to accomodate, '-al'
-    // https://stackoverflow.com/questions/15017102/commands-like-ls-l-not-executing-in-execl-whereas-in-execvp-it-works#:~:text=With%20execvp()%20%2C%20you%20can,looking%20at%20%24PATH%20at%20all.
+    /* increment through args and insert them into outputdir, but one position forward in index to accomodate, '-al' */
     for ( i = 1; outputdir[i] != NULL; i++) {
         outputdir[i + 1] = args[i];
     }
-    outputdir[i + 1] = NULL;                         // last argument is NULL
+    outputdir[i + 1] = NULL;                          // last argument is NULL
 
     if(execvp("ls", outputdir) == -1) {
         perror("execvp fail");
         exit(EXIT_FAILURE);  // error check
     }
 }
+// https://stackoverflow.com/questions/15017102/commands-like-ls-l-not-executing-in-execl-whereas-in-execvp-it-works#:~:text=With%20execvp()%20%2C%20you%20can,looking%20at%20%24PATH%20at%20all.
 
 /*  env    */
 void env() {
-    for (int i = 0; environ[i] != NULL; i++) {  //  iterate through exter char **environ, print
+    for (int i = 0; environ[i] != NULL; i++) {  // iterate through exter char **environ, print
         fprintf(stdout, "%s\n ", environ[i]);
     }
 }
 
 /*  pause   */
-// https://stackoverflow.com/questions/43475477/how-to-pause-the-c-program
 void pausecommand() {
     fprintf(stdout,"press Enter to continue...");
     fflush(stdout);                                // flush stdout buffer to ensure prompt is displayed
@@ -89,15 +88,12 @@ void pausecommand() {
     }
     fprintf(stdout,"continuing...\n");
 }
+// https://stackoverflow.com/questions/43475477/how-to-pause-the-c-program
 
 /*  IORedirection   */
-//https://stackoverflow.com/questions/11515399/implementing-shell-in-c-and-need-help-handling-input-output-redirection
-// https://stackoverflow.com/questions/52939356/redirecting-i-o-in-a-custom-shell-program-written-in-c
-// https://www.ibm.com/docs/en/i/7.4?topic=functions-freopen-redirect-open-files
-
 void IOredirect(char *args[]) {
 
-    // iterate through args and look for redirect symbol
+    /* iterate through args and look for redirect symbol */
     for(int i = 1; args[i] != NULL; i++) {
 
         if(strcmp(args[i], "<") == 0) {
@@ -105,7 +101,7 @@ void IOredirect(char *args[]) {
                 printf("Error : cannot open file %s for input\n", args[i+1]);   // error checking if file exists
             }
             else {
-                args[i] = NULL;         // removes redirect symbol and file name by setting them to NULL
+                args[i] = NULL;                               // removes redirect symbol and file name by setting them to NULL
                 args[i + 1] = NULL;
                 break;
             }
@@ -122,8 +118,8 @@ void IOredirect(char *args[]) {
             }
         }
 
-        else if (strcmp(args[i], ">>") == 0) {      //append         
-            if (freopen(args[i+1], "a", stdout) == NULL) {      // redirect standard output, 'a' specifics appending to the file, rather than writing over it
+        else if (strcmp(args[i], ">>") == 0) {  //append         
+            if (freopen(args[i+1], "a", stdout) == NULL) {  // redirect standard output, 'a' specifics appending to the file, rather than writing over it
                 printf("Error : cannot open file %s for output\n", args[i+1]);
             }
             else {
@@ -134,12 +130,15 @@ void IOredirect(char *args[]) {
         }        
     }
 }
+//https://stackoverflow.com/questions/11515399/implementing-shell-in-c-and-need-help-handling-input-output-redirection
+// https://stackoverflow.com/questions/52939356/redirecting-i-o-in-a-custom-shell-program-written-in-c
+// https://www.ibm.com/docs/en/i/7.4?topic=functions-freopen-redirect-open-files
 
 /*  manual  */ 
 void help() {
     char path[MAX_BUFFER];
     getcwd(path, sizeof(path));         // get cwd
-    char * read = malloc(strlen("cat ") * sizeof(path) + strlen(" | more"));    // malloc to read for full path including additonals
+    char * read = malloc(strlen("cat ") * sizeof(path) + strlen(" | more"));    // malloc to read for full path including additionals
     strcat(read, "cat ");       //concat cat into empty read
     strcat(read, path);        // "cat" + cwd
     strcat(read, "/../manual/readme.md | more -p");     // "cat" + "cwd" + "/../manual/readme.md | more =p"

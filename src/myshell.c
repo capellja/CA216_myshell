@@ -28,8 +28,8 @@ explicit or implicit, is provided.
 
 #include "myshell.h"
 
-#define MAX_BUFFER 1024                        // max line buffer
-#define MAX_ARGS 64                            // max # args
+#define MAX_BUFFER 1024                       // max line buffer
+#define MAX_ARGS 64                              // max # args
 #define SEPARATORS " \t\n"                     // token separators
 
 // child and parent pid's for testing
@@ -48,27 +48,28 @@ int main (int argc, char ** argv)
     /*  setting "SHELL" environment variable to path to shell  */
     char *pwd = strdup(getenv("PWD"));  // duplicate PWD for path to shell
 
-    char *shellvar = malloc(strlen(pwd) + strlen("/myshell"));  // malloc shellvar for pwd + /myshell
+    char *shellvar = malloc(strlen(pwd) + strlen("/myshell"));
     if(shellvar == NULL) {
-        printf("Memory allocation error");  // mem alloc error check
+        printf("Memory allocation error");  // error check
     }
     strcat(shellvar, pwd);  // "" + pwd
     strcat(shellvar, "/myshell");   // pwd + /myshell
     setenv("SHELL", shellvar, 1);   // setenv() to set "SHELL" as path to shell
+
     // https://www.tutorialspoint.com/c_standard_library/c_function_getenv.htm
 
     /* prompt - show current working directory */
     char *prompt = pwd;
     strcat(prompt, ": ");  
     
-    parent_pid = getpid(); // for testing
-    int flag =  0;          // batchfile check
+    parent_pid = getpid();      // for testing
+    int flag =  0;                      // batchfile check
 
-    /*  testing for batchfile   */
+    /*  testing for batchfile */
     if (argc != 1) {
         if(argv[1] != NULL) {
-            if (freopen(argv[1], "r", stdin) == NULL) { // use freopen() to set stdin as batchfile
-                perror("Failed to open file");  // error checking if file doesn't exist
+            if (freopen(argv[1], "r", stdin) == NULL) {                 // use freopen() to set stdin as batchfile
+                perror("Failed to open file");                                 // checking if file existz
                 return 1;
              }
             else {
@@ -87,23 +88,23 @@ int main (int argc, char ** argv)
             fputs (prompt, stdout); // else write prompt
         }
 
-        if (fgets (buf, MAX_BUFFER, stdin )) { // read a line
+        if (fgets (buf, MAX_BUFFER, stdin )) {  // read a line
             /* tokenize the input into args array */
             arg = args;
-            *arg++ = strtok(buf,SEPARATORS);   // tokenise input
-            while ((*arg++ = strtok(NULL,SEPARATORS))); // last entry will be NULL 
+            *arg++ = strtok(buf,SEPARATORS);                         // tokenise input
+            while ((*arg++ = strtok(NULL,SEPARATORS)));       // last entry will be NULL 
 
-            input = args[0]; // command input, first arg
+            input = args[0];    // command
             if (input) { 
 
                 /*  cd  */
                 if (!strcmp(input,"cd")) {
                     if(args[1] != NULL) {
                         cd(args);
-                        prompt = strcat(strdup(getenv("PWD")), ": ");   // update prompt to current directory
+                        prompt = strcat(strdup(getenv("PWD")), ": ");     // update prompt to current directory
                     }
                     else {
-                        printf("Directory : %s\n", getenv("PWD"));   // return current directory if no path specified
+                        printf("Directory : %s\n", getenv("PWD"));         // return current directory if no path specified
                     }
                     continue;
                 }
@@ -135,57 +136,62 @@ int main (int argc, char ** argv)
                // https://stackoverflow.com/questions/44297208/using-switch-statements-to-fork-two-processes
 
                 switch (pid = fork()) {
-                
+
+                    /*  fork failed  */
                     case -1: 
-                        perror("command does not exist");   // fork failed
+                        perror("command does not exist");
+
                     /* child process */
                     case 0:
 
-                        IOredirect(args);   // call IORedirect function to check for redirect symbols, return commands, output or input.
+                        IOredirect(args);       // call IORedirect function to check for redirect symbols
                         
-                        if (!strcmp(input,"clr")) { // "clear" command
+                        if (!strcmp(input,"clr")) {                       // "clear" command
                             clr();
                         }
                
-                        else if (!strcmp(input,"dir")) { // "show directory" command
+                        else if (!strcmp(input,"dir")) {               // "show directory" command
                             dir(args);
                         }
 
-                        else if (!strcmp(input,"echo")) {  // "echo" command
+                        else if (!strcmp(input,"echo")) {           // "echo" command
                             echo(args);
                         }
 
                         else if (!strcmp(input,"environ")) {     // "environ" command
                             env();
                         }
+
                         /*  external commands    */
                         else { 
-                            if(execvp(input, args) == -1) {  // execute command using execvp() with args 
+                            if(execvp(input, args) == -1) {                             // execute command using execvp() with args 
                                 fprintf(stdout,"Command %s does not exist\n", input);   // error checking if command exists
                                 break;
                             }
                         }
                         exit(0);
+
                     /* parent  */
                     default: 
 
                         /*  background processing */
                          // check for "&" in args
                          // https://stackoverflow.com/questions/46860148/c-how-do-i-run-a-program-in-the-background-using-exec
+
                         int backgroundflag = 0;
-                        for(int i = 1; args[i] != NULL; i++) {  // iterate through args
+                        for(int i = 1; args[i] != NULL; i++) {      // iterate through args
                             if(strcmp(args[i], "&") == 0) {
-                                backgroundflag = 1; //flag =1 if present
+                                backgroundflag = 1;                   // flag =1 if present
                             }
                         }
 
                         if(backgroundflag == 1) {
-                            waitpid(pid, NULL, 0);  // set WAIT to NULL so parent will not wait for child process to finish
+                            waitpid(pid, NULL, 0);         // set WAIT to NULL so parent will not wait for child process to finish
                             printf("Running command '%s' in background\n", args[0]);
                             break;
                         }
                         else if(backgroundflag == 0) {
-                            waitpid(pid, &status, 0);  // wait for the child process to finish
+                            waitpid(pid, &status, 0);   // wait for the child process to finish
                             //printf("this is working, %s\n", args[0]);
                             break;
                         }
@@ -193,7 +199,7 @@ int main (int argc, char ** argv)
             }
         }
     }
-    free(shellvar);     //free memory
+    free(shellvar); //free memory
     shellvar = NULL;
 
     return 0; 

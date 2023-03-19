@@ -1,27 +1,4 @@
-clr
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-echo test long ass wrods
-cd
-cd
-cd
-cd
-cd
-cd
-
-cd
 echo test
-echo test
+dir
 cd
-cd
-echo test
-echo test
-environ
-environ
+ls

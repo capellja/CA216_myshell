@@ -11,11 +11,13 @@ MyShell provides a basic shell environment similar to the Unix / Linux shell.
 
 #### Invocation
 
+    eg.
+        [command] arg1
+
 MyShell can be invoked by running "./myshell" in the directory where the executable is compiled.
 You are greeted by the prompt which shows your current working directory.
 The shell reads the command line for the given command and following arguments. Errors will be raised of incorrect syntax is provided.
-    eg.
-        [command] arg1
+
 
 #### Arguments
 
@@ -78,8 +80,8 @@ The shell runs it's external and internal commands through these child processes
 ## Background Processing
 
 MyShell supports background execution of commands if '&' is present as the final argument.
-eg.
-    command argument &
+    eg.
+        command argument &
 MyShell returns the message, "Running command [command] in the background>. While typically the parent process(shell) waits for the child process(command) to be done, this feature allows the child process to run in the background and the user is given access to the command line immediately.
 
 ## I/O Redirection

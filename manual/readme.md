@@ -21,9 +21,10 @@ The shell reads the command line for the given command and following arguments. 
 
 #### Arguments
 
-MyShell can be invoked along with an argument. Given that this argument is a file and [batchfile] contains lines of commands, MyShell will read input from the file and perform said commands before exiting.
     eg.
         ./myshell [batchfile]
+
+MyShell can be invoked along with an argument. Given that this argument is a file and [batchfile] contains lines of commands, MyShell will read input from the file and perform said commands before exiting.
 note: myshell has a bug with environ.
 
 ## Interal Commands
@@ -79,9 +80,10 @@ The shell runs it's external and internal commands through these child processes
 
 ## Background Processing
 
-MyShell supports background execution of commands if '&' is present as the final argument.
     eg.
         command argument &
+    
+MyShell supports background execution of commands if '&' is present as the final argument.
 MyShell returns the message, "Running command [command] in the background>. While typically the parent process(shell) waits for the child process(command) to be done, this feature allows the child process to run in the background and the user is given access to the command line immediately.
 
 ## I/O Redirection

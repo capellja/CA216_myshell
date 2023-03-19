@@ -1,4 +1,4 @@
-# CA216 Operating Systems: MyShell User Manual
+# MyShell User Manual
 Press Q to quit User Manual
 ## Introduction
 MyShell is a simple command line interpreter for Linux built using C. 
@@ -16,38 +16,38 @@ MyShell can be invoked along with an argument. Given that this argument [batchfi
 
 ## Interal Commands
 
-CD
-Changes current directory
-Shows current directory if no argument is given
-Displays error if directory does not exist
+    CD
+        Changes current directory
+        Shows current directory if no argument is given
+        Displays error if directory does not exist
 
-CLR
-Clears terminal screen.
-Returns prompt
+    CLR
+        Clears terminal screen.
+        Returns prompt
 
-DIR
-Lists contents of given directory
-Displays contents of current directory if no argument is given.
+    DIR
+        Lists contents of given directory
+        Displays contents of current directory if no argument is given.
 
-ENVIRON
-Displays list of environment variables
+    ENVIRON
+        Displays list of environment variables
 
-ECHO
-Displays string given as an argument as a newline.
-String can consist of mutiple words separated by spaces / tabs, but are reduced to a single when shown.
+    ECHO
+        Displays string given as an argument as a newline.
+        String can consist of mutiple words separated by spaces / tabs, but are reduced to a single when shown.
 
-HELP
-Display the User Manual. One page at a time.
-Press 'Enter' to display next line.
-Press 'Space' to display the next page.
-Press 'Q' to quit.
-Use arrow keys to navigate the page.
+    HELP
+        Display the User Manual. One page at a time.
+        Press 'Enter' to display next line.
+        Press 'Space' to display the next page.
+        Press 'Q' to quit.
+        Use arrow keys to navigate the page.
 
-PAUSE
-Pause operation until 'Enter' key is pressed
+    PAUSE
+        Pause operation until 'Enter' key is pressed
 
-QUIT
-Quits the shell
+    QUIT
+        Quits the shell
 
 ## External Commands
 

@@ -13,6 +13,7 @@
 extern char **environ;                                // extern char for environ()
 
 /*  cd   */
+// https://iq.opengenus.org/chdir-fchdir-getcwd-in-c/#:~:text=The%20chdir%20function%20is%20used,chdir(%20const%20char%20*pathname%20)%3B
 void cd(char *args[]) {     
     char cwd[MAX_BUFFER];
     
@@ -38,6 +39,7 @@ void echo(char *args[]) {
     int i;
 
     //  iterate through args and store them in output
+    // https://stackoverflow.com/questions/8827939/handling-arguments-array-of-execvp
     echoOutput[0] = "echo";                                    // first element has to be echo
     for (i = 1; args[i] != NULL; i++) {
         echoOutput[i] = args[i];
@@ -58,6 +60,7 @@ void dir(char *args[]) {
     int i;
 
     // increment through args and insert them into outputdir, but one position forward in index to accomodate, '-al'
+    // https://stackoverflow.com/questions/15017102/commands-like-ls-l-not-executing-in-execl-whereas-in-execvp-it-works#:~:text=With%20execvp()%20%2C%20you%20can,looking%20at%20%24PATH%20at%20all.
     for ( i = 1; outputdir[i] != NULL; i++) {
         outputdir[i + 1] = args[i];
     }
@@ -77,6 +80,7 @@ void env() {
 }
 
 /*  pause   */
+// https://stackoverflow.com/questions/43475477/how-to-pause-the-c-program
 void pausecommand() {
     fprintf(stdout,"press Enter to continue...");
     fflush(stdout);                                // flush stdout buffer to ensure prompt is displayed
@@ -87,6 +91,10 @@ void pausecommand() {
 }
 
 /*  IORedirection   */
+//https://stackoverflow.com/questions/11515399/implementing-shell-in-c-and-need-help-handling-input-output-redirection
+// https://stackoverflow.com/questions/52939356/redirecting-i-o-in-a-custom-shell-program-written-in-c
+// https://www.ibm.com/docs/en/i/7.4?topic=functions-freopen-redirect-open-files
+
 void IOredirect(char *args[]) {
 
     // iterate through args and look for redirect symbol
@@ -174,3 +182,11 @@ void fk(char *args[]) {
     }
 }
 */ 
+
+/* Acknowledgement of the DCU Academic Integrity Policy:
+* I understand that the University regards breaches of academic integrity and plagiarism as grave and serious.
+* I have read and understood the DCU Academic Integrity and Plagiarism Policy. I accept the penalties that may be imposed should I engage in practice or practices that breach this policy.
+* I have identified and included the source of all facts, ideas, opinions and viewpoints of others in the assignment references. Direct quotations, paraphrasing, discussion of ideas from books, journal articles, internet sources, module text, or any other source whatsoever are acknowledged and the sources cited are identified in the assignment references.
+* I declare that this material, which I now submit for assessment, is entirely my own work and has not been taken from the work of others save and to the extent that such work has been cited and acknowledged within the text of my work.
+* I have used the DCU library referencing guidelines and/or the appropriate referencing system recommended in the assignment guidelines and/or programme documentation.
+*/

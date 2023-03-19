@@ -28,10 +28,14 @@ void cd(char *args[]) {
 
 /*  clear   */
 void clr() {
-    char * temp[MAX_BUFFER] = {NULL};
-    execvp("clear", temp);
-    // printf("\033[2J\033[H"); // ANSI escape codes to clear screen
+    char * temp[MAX_BUFFER] = {"clear", NULL};
+    if(execvp("clear", temp) == -1) {
+        perror("execvp fail");
+        exit(EXIT_FAILURE);                                    // error check
+    }
+    // alternate method : printf("\033[2J\033[H"); // ANSI escape codes to clear screen
 }
+//https://gist.github.com/HorlogeSkynet/e99159ed5ba1737a632c55d356f41889
 
 /*  echo    */
 void echo(char *args[]) {

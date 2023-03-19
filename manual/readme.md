@@ -1,12 +1,16 @@
 # MyShell User Manual
+
 Press Q to quit User Manual
 ## Introduction
+
 MyShell is a simple command line interpreter for Linux built using C programming language. 
 The shell is capable of executing internal commands such as "cd", "clr", "dir", "echo", "environ", "pause", and "quit". Additionally, it can also execute external commands that are stored in the system's path. The program also supports I/O redirection and input from a batchfile.
 MyShell provides a basic shell environment similar to the Unix / Linux shell.
 
 ## Usage
+
 #### Invocation
+
 MyShell can be invoked by running "./myshell" in the directory where the executable is compiled.
 You are greeted by the prompt which shows your current working directory.
 The shell reads the command line for the given command and following arguments. Errors will be raised of incorrect syntax is provided.
@@ -14,6 +18,7 @@ The shell reads the command line for the given command and following arguments. 
         [command] arg1
 
 #### Arguments
+
 MyShell can be invoked along with an argument. Given that this argument is a file and [batchfile] contains lines of commands, MyShell will read input from the file and perform said commands before exiting.
     eg.
         ./myshell [batchfile]
@@ -55,6 +60,7 @@ note: myshell has a bug with environ.
         Quits the shell.
 
 ## External Commands
+
 MyShell has the ability to perform external commands (eg. ls, python3, pwd, etc..) An Error message will be raised if the external command is not recognised.
 
 ## Environment
@@ -63,17 +69,21 @@ MyShell has the ability to perform external commands (eg. ls, python3, pwd, etc.
 - MyShell utilises examples of environment variables including PATH, which specifies the directories that the operating system should search for the executable program and SHELL, which specifies the default shell for the user.
 - These variables are set by the operating system, system programs, and user-defined scripts.
 - MyShell sets 'SHELL' to the path of the shell, and dynamically updates 'PATH' depending on the current working directory.
+
 ## Processes
+
 MyShell forks its parent process to create an identical child processes.
 The shell runs it's external and internal commands through these child processes. This allows features such as background processing to be implemented.
 
 ## Background Processing
+
 MyShell supports background execution of commands if '&' is present as the final argument.
 eg.
     command argument &
 MyShell returns the message, "Running command [command] in the background>. While typically the parent process(shell) waits for the child process(command) to be done, this feature allows the child process to run in the background and the user is given access to the command line immediately.
 
 ## I/O Redirection
+
 MyShell supports I/O redirection of standard input (stdin) and standard output(stdout).
 This implemenatation allows you read input or provide output to/ from an external source such as a file.
 
@@ -83,6 +93,7 @@ This implemenatation allows you read input or provide output to/ from an externa
 - Where the stdin is replaced by inputfile and the stdout is replaced by outputfile.
 
 ### MyShell can handle three types of I/O Redirection
+
     1. Input [<] 
     2. Output [>]
     - Will create a new file if it doesn't exist, otherwise it will be overwritten
@@ -91,6 +102,7 @@ This implemenatation allows you read input or provide output to/ from an externa
 
 
 #### References
+
 - I/O redirection ; Oualline, S. (1997). Practical C programming. " O'Reilly Media, Inc.".
 - Proccesses ; Gehani, N., & Roome, W. D. (1989). The concurrent C programming language. Silicon Press.
 - Command line processing, General Linux ; Newham, C. (2005). Learning the bash shell: Unix shell programming. " O'Reilly Media, Inc.".
